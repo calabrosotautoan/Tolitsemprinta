@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Tolits Emprińta</title>
+
+  <link rel="icon" type="image/jpeg" href="https://scontent.fmnl9-3.fna.fbcdn.net/v/t39.30808-1/356230615_108772785599620_7986125659895052271_n.jpg">
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root {
+      --primary: #bd0000;
+      --muted-foreground: #888;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Rajdhani', sans-serif;
+      background: #0f0f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-screen {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    .login-container {
+      background: rgba(20, 20, 35, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(189, 0, 0, 0.25);
+      border-radius: 1.5rem;
+      padding: 2.2rem 1.6rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 10;
+    }
+
+    .login-brand {
+      text-align: center;
+      margin-bottom: 2.2rem;
+    }
+
+    .brand-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .login-brand img {
+      width: 94px;
+      height: 94px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 6px 20px rgba(189, 0, 0, 0.35);
+    }
+
+    .login-brand h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      margin: 0;
+      letter-spacing: -1.5px;
+      background: linear-gradient(90deg, #ff0044, #bd0000, #ff3366);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .login-subtitle {
+      margin: 0.8rem 0 0;
+      font-size: 1.05rem;
+      color: #ccc;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 1.8rem;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background: transparent;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(189,0,0,0.3);
+      border-radius: 0.7rem;
+      background: rgba(255,255,255,0.07);
+      color: white;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(189,0,0,0.2);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-35%);
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.7rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #d40000;
+      transform: translateY(-2px);
+    }
+
+    .login-note {
+      margin-top: 1.8rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    /* Background blobs */
+    .login-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+    }
+
+    .blob-1 { width: 400px; height: 400px; background: #bd0000; top: -15%; left: -20%; }
+    .blob-2 { width: 350px; height: 350px; background: #ff3366; bottom: -10%; right: -15%; }
+
+    .toast {
+      position: fixed;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 180, 0, 0.9);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      transition: bottom 0.5s ease;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .toast.active {
+      bottom: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 2rem 1.3rem;
+        max-width: 380px;
+      }
+      .login-brand h1 { font-size: 2.3rem; }
+      .login-brand img { width: 86px; height: 86px; }
+      .brand-wrapper { gap: 0.8rem; }
+      .login-subtitle { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-screen">
+    <div class="login-container">
+      <div class="login-brand">
+        <div class="brand-wrapper">
+          <img 
+            src="https://yt3.ggpht.com/WXt1osvzYAZ4WDB1Yq7T2rxzfNY5l1MRiCiBtEMNuh0edohqtIu9Z23hB0CWrPwkgkXF4U92H8gpt7A=s640-c-fcrop64=1,05b40000fa4bffff-rw-nd-v1"
+            alt="Tolits Emprińta Logo"
+            width="94" height="94" loading="lazy">
+          <h1 class="text-gradient">TOLITS EMPRIŃTA</h1>
+        </div>
+        <p class="login-subtitle">Sign in or create an account to access your projects</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" onclick="showTab('signin', this)">Sign In</button>
+        <button class="tab-btn" onclick="showTab('signup', this)">Create Account</button>
+      </div>
+
+      <div id="signin" class="auth-form active">
+        <form id="loginForm" onsubmit="handleLocalLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" required autocomplete="email" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="loginPass">Password</label>
+            <input type="password" id="loginPass" required autocomplete="current-password" placeholder="••••••••">
+            <button type="button" class="password-toggle" onclick="togglePassword('loginPass', this)">Show</button>
+          </div>
+          <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+      </div>
+
+      <div id="signup" class="auth-form">
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label for="regName">Full Name</label>
+            <input type="text" id="regName" required autocomplete="name" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" required autocomplete="email" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="regPass">Password (min 6 characters)</label>
+            <input type="password" id="regPass" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+            <button type="button" class="password-toggle" onclick="togglePassword('regPass', this)">Show</button>
+          </div>
+          <button type="submit" class="btn-primary">Create Account</button>
+        </form>
+
+        <p class="login-note">By creating an account, you agree to our terms.</p>
+      </div>
+    </div>
+
+    <div class="login-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><h4 id="toastMessage"></h4></div>
+
+  <script>
+    function showTab(tabId, btn) {
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function togglePassword(id, btn) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.textContent = input.type === 'password' ? 'Show' : 'Hide';
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('regPass').value;
+
+      if (!name || !email || !pass) return showToast("All fields required", true);
+      if (pass.length < 6) return showToast("Password too short (min 6)", true);
+
+      let users = JSON.parse(localStorage.getItem("tolitsLocalUsers") || "[]");
+      if (users.some(u => u.email === email)) return showToast("Email already taken", true);
+
+      const newUser = { 
+        name, 
+        email, 
+        pass,
+        provider: 'local',
+        memberSince: new Date().toLocaleDateString('en-US', {month:'long', year:'numeric'})
+      };
+      users.push(newUser);
+      localStorage.setItem("tolitsLocalUsers", JSON.stringify(users));
+      localStorage.setItem("tolitsUser", JSON.stringify({name, email, provider:'local', memberSince: newUser.memberSince}));
+
+      redirectWithToast(`Welcome, ${name.split(" ")[0]}!`);
+    }
+
+    function handleLocalLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value;
+
+      let users = JSON.parse(localStorage.getItem("tolitsLocalUsers") || "[]");
+      const user = users.find(u => u.email === email && u.pass === pass);
+
+      if (!user) return showToast("Invalid email or password", true);
+
+      localStorage.setItem("tolitsUser", JSON.stringify({name: user.name, email, provider:'local', memberSince: user.memberSince}));
+      redirectWithToast(`Welcome back, ${user.name.split(" ")[0]}!`);
+    }
+
+    function redirectWithToast(msg) {
+      showToast(msg);
+      setTimeout(() => location.href = "index.html", 1600);
+    }
+
+    function showToast(message, error = false) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toastMessage');
+      msgEl.textContent = message;
+      toast.style.background = error ? 'rgba(200,0,0,0.9)' : 'rgba(0,180,0,0.9)';
+      toast.classList.add('active');
+      setTimeout(() => toast.classList.remove('active'), 3800);
+    }
+
+    // Auto-show sign-in tab on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.tab-btn').click();
+    });
+  </script>
+</body>
+</html>
